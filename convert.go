@@ -2,7 +2,10 @@ package converter
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
+	"path"
+	"runtime"
 	"strings"
 )
 
@@ -28,7 +31,11 @@ func Create(dictName string) (*Converter, error) {
 	if !strings.HasSuffix(dictName, ".json") {
 		filename = dictName + ".json"
 	}
-	var data, err = ioutil.ReadFile(filename)
+	_, scriptFilename, _, ok := runtime.Caller(1)
+	if !ok {
+		return nil, errors.New("failed to get lib bin dir")
+	}
+	var data, err = ioutil.ReadFile(path.Join(path.Dir(scriptFilename), filename))
 	if err != nil {
 		return nil, err
 	}
