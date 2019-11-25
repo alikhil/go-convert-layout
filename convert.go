@@ -1,11 +1,7 @@
 package converter
 
 import (
-	"encoding/json"
 	"errors"
-	"io/ioutil"
-	"path"
-	"runtime"
 	"strings"
 )
 
@@ -25,29 +21,27 @@ func (c *Converter) ToEn(msg string) string {
 	return c.toReplacer.Replace(msg)
 }
 
-// Create creates new instance of converter using dictName.json file in the root
+// Create creates new instance of converter using dictName dictionary
 func Create(dictName string) (*Converter, error) {
-	var filename = dictName
-	if !strings.HasSuffix(dictName, ".json") {
-		filename = dictName + ".json"
-	}
-	_, scriptFilename, _, ok := runtime.Caller(1)
-	if !ok {
-		return nil, errors.New("failed to get lib bin dir")
-	}
-	var data, err = ioutil.ReadFile(path.Join(path.Dir(scriptFilename), filename))
-	if err != nil {
-		return nil, err
+	var dict map[string]string
+	var name = strings.ToLower(dictName)
+	switch name {
+	case "ru":
+		dict = ruDict
+		break
+	case "dvorak":
+		dict = dvorakDict
+		break
+	case "by":
+		dict = byDict
+		break
+	default:
+		return nil, errors.New("dict not found")
 	}
 	var (
-		dict    map[string]string
 		full    []string
 		reverse []string
 	)
-	err = json.Unmarshal(data, &dict)
-	if err != nil {
-		return nil, err
-	}
 	for k, v := range dict {
 		full = append(full, k, v)
 		reverse = append(reverse, v, k)
