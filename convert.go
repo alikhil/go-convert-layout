@@ -35,6 +35,27 @@ func Create(dictName string) (*Converter, error) {
 	case "by":
 		dict = byDict
 		break
+	case "uk":
+		dict = ukDict
+		break
+	case "de":
+		dict = deDict
+		break
+	case "es":
+		dict = esDict
+		break
+	case "fa":
+		dict = faDict
+		break
+	case "he":
+		dict = heDict
+		break
+	case "kk":
+		dict = kkDict
+		break
+	case "kr":
+		dict = krDict
+		break
 	default:
 		return nil, errors.New("dict not found")
 	}
